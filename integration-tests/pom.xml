@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.bettingcopilot</groupId>
+        <artifactId>betting-copilot</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
+
+    <artifactId>integration-tests</artifactId>
+    <name>integration-tests</name>
+    <description>Testcontainers integration tests and RestAssured contract tests for Betting Copilot</description>
+
+    <properties>
+        <!-- Spring Boot's BOM manages Groovy 5, but REST Assured 5.5.x requires Groovy 4 -->
+        <groovy.version>4.0.32</groovy.version>
+
+        <!-- Default run: self-contained Testcontainers ITs. The contract tag needs a live
+             server and is enabled via -Pcontract. -->
+        <failsafe.groups>integration</failsafe.groups>
+        <failsafe.excludedGroups>contract</failsafe.excludedGroups>
+    </properties>
+
+    <dependencies>
+        <!-- The application under test -->
+        <dependency>
+            <groupId>com.bettingcopilot</groupId>
+            <artifactId>betting-copilot-api</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- RestTestClient support for @SpringBootTest server tests (Boot 4 replacement for TestRestTemplate) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-resttestclient</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Testcontainers -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-testcontainers</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Contract tests -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <groups>${failsafe.groups}</groups>
+                    <excludedGroups>${failsafe.excludedGroups}</excludedGroups>
+                    <includes>
+                        <include>**/*IT.java</include>
+                    </includes>
+                    <systemPropertyVariables>
+                        <api.baseUrl>${api.baseUrl}</api.baseUrl>
+                    </systemPropertyVariables>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <!-- Contract tests against a live server:
+             ./mvnw -pl integration-tests verify -Pcontract -Dapi.baseUrl=http://localhost:8080 -->
+        <profile>
+            <id>contract</id>
+            <properties>
+                <failsafe.groups>contract</failsafe.groups>
+                <failsafe.excludedGroups/>
+            </properties>
+        </profile>
+    </profiles>
+
+</project>
