@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.6</version>
+        <version>4.1.0</version>
         <relativePath/>
     </parent>
 
@@ -27,16 +27,16 @@
 
     <properties>
         <java.version>25</java.version>
-        <testcontainers.version>1.20.4</testcontainers.version>
-        <rest-assured.version>5.5.2</rest-assured.version>
+        <testcontainers.version>2.0.5</testcontainers.version>
+        <rest-assured.version>6.0.1</rest-assured.version>
         <api.baseUrl>http://localhost:8080</api.baseUrl>
 
         <!-- Reproducible builds: identical sources produce byte-identical artifacts -->
         <project.build.outputTimestamp>2026-07-10T00:00:00Z</project.build.outputTimestamp>
 
-        <spotless.version>2.44.5</spotless.version>
+        <spotless.version>3.9.0</spotless.version>
         <google-java-format.version>1.27.0</google-java-format.version>
-        <jacoco.version>0.8.13</jacoco.version>
+        <jacoco.version>0.8.15</jacoco.version>
     </properties>
 
     <dependencyManagement>
